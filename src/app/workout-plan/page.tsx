@@ -21,38 +21,44 @@ const staggerChildren = {
   }
 };
 
-const ExerciseCard = ({ exercise, dayColor, index }: { exercise: ExerciseType; dayColor: string; index: number }) => {
+const ExerciseCard = ({ exercise, dayColor }: { exercise: ExerciseType; dayColor: string }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const textColor = `text-${dayColor}-400`;
 
   return (
     <motion.div
       variants={fadeInUp}
-      initial="initial"
-      animate="animate"
-      exit="exit"
-      transition={{ duration: 0.3, delay: index * 0.1 }}
-      className={`overflow-hidden rounded-lg border border-${dayColor}-100 bg-white shadow-sm transition-all duration-200 hover:shadow-md`}
+      className="relative overflow-hidden rounded-xl bg-gray-800/50 shadow-neumorph-dark-sm transition-all duration-300"
     >
-      <button
+      {/* Gradient border effect */}
+      <div className={`absolute inset-0 bg-gradient-to-r from-${dayColor}-500/10 to-${dayColor}-600/10`} />
+      
+      <motion.button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="flex w-full items-center justify-between p-4 text-left"
+        whileHover={{ backgroundColor: 'rgba(255, 255, 255, 0.05)' }}
+        whileTap={{ backgroundColor: 'rgba(255, 255, 255, 0.08)' }}
+        className="relative flex w-full items-center justify-between p-5 text-left"
       >
-        <div className="flex-1 pr-4">
-          <h3 className="text-lg font-semibold text-gray-900">{exercise.name}</h3>
-          <p className="mt-1 text-sm text-gray-500">{exercise.targetMuscles}</p>
+        <div className="flex flex-col space-y-2">
+          <h3 className={`text-xl font-bold ${textColor}`}>
+            {exercise.name}
+          </h3>
+          <p className="text-sm font-medium text-gray-100">
+            {exercise.targetMuscles}
+          </p>
           <div className="mt-2 flex flex-wrap items-center gap-3">
             <motion.span 
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className={`inline-flex items-center rounded-full bg-${dayColor}-50 px-2.5 py-0.5 text-xs font-medium text-${dayColor}-700`}
+              className={`inline-flex items-center rounded-lg bg-gray-900/50 px-3 py-1 text-sm font-medium ${textColor} shadow-neumorph-dark-sm`}
             >
               {exercise.sets} sets
             </motion.span>
             <motion.span 
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className={`inline-flex items-center rounded-full bg-${dayColor}-50 px-2.5 py-0.5 text-xs font-medium text-${dayColor}-700`}
+              className={`inline-flex items-center rounded-lg bg-gray-900/50 px-3 py-1 text-sm font-medium ${textColor} shadow-neumorph-dark-sm`}
             >
               {exercise.reps} reps
             </motion.span>
@@ -60,31 +66,32 @@ const ExerciseCard = ({ exercise, dayColor, index }: { exercise: ExerciseType; d
               <motion.span 
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className={`inline-flex items-center rounded-full bg-${dayColor}-50 px-2.5 py-0.5 text-xs font-medium text-${dayColor}-700`}
+                className={`inline-flex items-center rounded-lg bg-gray-900/50 px-3 py-1 text-sm font-medium ${textColor} shadow-neumorph-dark-sm`}
               >
-                <ClockIcon className="mr-1 h-3 w-3" />
+                <ClockIcon className="mr-1.5 h-4 w-4" />
                 {exercise.restTime}
               </motion.span>
             )}
           </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           {exercise.videoUrl && (
             <motion.div
               whileHover={{ scale: 1.1, rotate: 360 }}
               transition={{ duration: 0.3 }}
+              className={textColor}
             >
-              <PlayCircleIcon className={`h-5 w-5 text-${dayColor}-500`} />
+              <PlayCircleIcon className="h-6 w-6" />
             </motion.div>
           )}
           <motion.div
             animate={{ rotate: isOpen ? 180 : 0 }}
             transition={{ duration: 0.3 }}
           >
-            <ChevronDownIcon className={`h-5 w-5 text-${isOpen ? `${dayColor}-600` : 'gray-400'}`} />
+            <ChevronDownIcon className={`h-6 w-6 ${isOpen ? textColor : 'text-gray-100'}`} />
           </motion.div>
         </div>
-      </button>
+      </motion.button>
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -93,13 +100,13 @@ const ExerciseCard = ({ exercise, dayColor, index }: { exercise: ExerciseType; d
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.3, ease: "easeInOut" }}
           >
-            <div className={`border-t border-${dayColor}-100 bg-${dayColor}-50/30 p-4`}>
+            <div className="relative border-t border-gray-700 bg-gray-900/50 p-4 shadow-neumorph-dark-inner">
               {exercise.videoUrl && (
                 <motion.div 
                   initial={{ scale: 0.95, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   transition={{ duration: 0.3 }}
-                  className="mt-2"
+                  className="mt-2 overflow-hidden rounded-lg shadow-neumorph-dark-sm"
                 >
                   <VideoPlayer url={exercise.videoUrl} />
                 </motion.div>
@@ -114,8 +121,17 @@ const ExerciseCard = ({ exercise, dayColor, index }: { exercise: ExerciseType; d
 
 const WorkoutDay = ({ day, index }: { day: WorkoutDayType; index: number }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const colors = ['blue', 'indigo', 'purple', 'pink', 'rose', 'orange'];
-  const dayColor = colors[index % colors.length];
+  
+  // Define color styles for each index
+  const colorStyles = [
+    { text: 'text-cyan-400', gradient: 'from-cyan-500/10 to-blue-500/10' },
+    { text: 'text-blue-400', gradient: 'from-blue-500/10 to-indigo-500/10' },
+    { text: 'text-indigo-400', gradient: 'from-indigo-500/10 to-violet-500/10' },
+    { text: 'text-violet-400', gradient: 'from-violet-500/10 to-purple-500/10' },
+    { text: 'text-purple-400', gradient: 'from-purple-500/10 to-cyan-500/10' }
+  ];
+  
+  const currentColor = colorStyles[index % colorStyles.length];
 
   return (
     <motion.div
@@ -124,32 +140,34 @@ const WorkoutDay = ({ day, index }: { day: WorkoutDayType; index: number }) => {
       animate="animate"
       exit="exit"
       transition={{ duration: 0.3, delay: index * 0.1 }}
-      className={`overflow-hidden rounded-lg border border-${dayColor}-200 bg-white shadow transition-all duration-200 hover:shadow-md`}
+      className="relative overflow-hidden rounded-2xl bg-gray-800/50 shadow-neumorph-dark transition-all duration-300"
     >
+      {/* Gradient border effect */}
+      <div className={`absolute inset-0 bg-gradient-to-r ${currentColor.gradient}`} />
+      
       <motion.button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        whileHover={{ backgroundColor: dayColor === 'blue' ? 'rgba(59,130,246,0.05)' : 
-                                    dayColor === 'indigo' ? 'rgba(99,102,241,0.05)' : 
-                                    'rgba(147,51,234,0.05)' }}
-        className="flex w-full items-center justify-between p-6 text-left"
+        whileHover={{ backgroundColor: 'rgba(255, 255, 255, 0.05)' }}
+        whileTap={{ backgroundColor: 'rgba(255, 255, 255, 0.08)' }}
+        className="relative flex w-full items-center justify-between p-6 text-left"
       >
         <div>
           <motion.h2 
             layout
-            className={`text-xl font-semibold text-${dayColor}-900`}
+            className={`text-2xl font-bold ${currentColor.text}`}
           >
             Day {day.day}
           </motion.h2>
           <motion.p 
             layout
-            className="mt-1 text-sm text-gray-600"
+            className="mt-1 text-base font-medium text-gray-100"
           >
             {day.name}
           </motion.p>
           <motion.p 
             layout
-            className="mt-2 text-sm text-gray-500"
+            className="mt-2 text-sm text-gray-300"
           >
             {day.exercises.length} exercises
           </motion.p>
@@ -158,7 +176,7 @@ const WorkoutDay = ({ day, index }: { day: WorkoutDayType; index: number }) => {
           animate={{ rotate: isOpen ? 180 : 0 }}
           transition={{ duration: 0.3 }}
         >
-          <ChevronDownIcon className={`h-6 w-6 text-${isOpen ? `${dayColor}-600` : 'gray-400'}`} />
+          <ChevronDownIcon className={`h-6 w-6 ${isOpen ? currentColor.text : 'text-gray-100'}`} />
         </motion.div>
       </motion.button>
       <AnimatePresence>
@@ -169,7 +187,7 @@ const WorkoutDay = ({ day, index }: { day: WorkoutDayType; index: number }) => {
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.3, ease: "easeInOut" }}
           >
-            <div className={`border-t border-${dayColor}-100 p-6`}>
+            <div className="relative border-t border-gray-700 p-6">
               <motion.div 
                 variants={staggerChildren}
                 initial="initial"
@@ -180,8 +198,7 @@ const WorkoutDay = ({ day, index }: { day: WorkoutDayType; index: number }) => {
                   <ExerciseCard 
                     key={`${day.day}-${exercise.name}-${i}`} 
                     exercise={exercise}
-                    dayColor={dayColor}
-                    index={i}
+                    dayColor={currentColor.text.split('-')[1]}
                   />
                 ))}
               </motion.div>
@@ -195,13 +212,19 @@ const WorkoutDay = ({ day, index }: { day: WorkoutDayType; index: number }) => {
 
 export default function WorkoutPlanPage() {
   const [selectedWeek, setSelectedWeek] = useState(1);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  const weeks = [
+    { value: 1, label: 'Week 1' },
+    { value: 2, label: 'Week 2' },
+  ];
 
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8"
+      className="min-h-screen py-8 px-4 sm:px-6 lg:px-8"
     >
       <div className="mx-auto max-w-4xl">
         <motion.div 
@@ -215,7 +238,7 @@ export default function WorkoutPlanPage() {
               initial={{ x: -20, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl"
+              className="text-4xl font-bold tracking-tight bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-500 bg-clip-text text-transparent sm:text-5xl"
             >
               Workout Plan
             </motion.h1>
@@ -223,28 +246,87 @@ export default function WorkoutPlanPage() {
               initial={{ x: 20, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="flex items-center gap-4"
+              className="relative"
             >
-              <motion.select
+              <motion.button
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                value={selectedWeek}
-                onChange={(e) => setSelectedWeek(Number(e.target.value))}
-                className="rounded-lg border-gray-300 bg-white py-2 pl-3 pr-10 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500"
+                className="flex items-center gap-2 rounded-xl bg-gray-800/50 px-4 py-2.5 text-base font-medium text-gray-100 shadow-neumorph-dark transition-all duration-300 hover:bg-gray-800/80 focus:outline-none"
               >
-                <option value={1}>Week 1</option>
-                <option value={2}>Week 2</option>
-              </motion.select>
+                <span className="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+                  Week {selectedWeek}
+                </span>
+                <ChevronDownIcon 
+                  className={`h-5 w-5 text-cyan-400 transition-transform duration-300 ${
+                    isDropdownOpen ? 'rotate-180' : ''
+                  }`}
+                />
+              </motion.button>
+
+              <AnimatePresence>
+                {isDropdownOpen && (
+                  <>
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="fixed inset-0 z-30"
+                      onClick={() => setIsDropdownOpen(false)}
+                    />
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      transition={{ duration: 0.2 }}
+                      className="absolute right-0 z-40 mt-2 w-48 origin-top-right"
+                    >
+                      <div className="relative overflow-hidden rounded-xl bg-gray-800/95 shadow-neumorph-dark backdrop-blur-sm">
+                        <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 to-blue-500/10" />
+                        <div className="relative divide-y divide-gray-700/50">
+                          {weeks.map((week) => (
+                            <motion.button
+                              key={week.value}
+                              onClick={() => {
+                                setSelectedWeek(week.value);
+                                setIsDropdownOpen(false);
+                              }}
+                              whileHover={{ backgroundColor: 'rgba(255, 255, 255, 0.05)' }}
+                              whileTap={{ backgroundColor: 'rgba(255, 255, 255, 0.08)' }}
+                              className={`flex w-full items-center justify-between px-4 py-3 text-left text-sm transition-all duration-300 ${
+                                selectedWeek === week.value
+                                  ? 'text-cyan-400'
+                                  : 'text-gray-100 hover:text-cyan-400'
+                              }`}
+                            >
+                              <span className="font-medium">{week.label}</span>
+                              {selectedWeek === week.value && (
+                                <motion.div
+                                  initial={{ scale: 0.5, opacity: 0 }}
+                                  animate={{ scale: 1, opacity: 1 }}
+                                  className="h-1.5 w-1.5 rounded-full bg-cyan-400"
+                                />
+                              )}
+                            </motion.button>
+                          ))}
+                        </div>
+                      </div>
+                    </motion.div>
+                  </>
+                )}
+              </AnimatePresence>
             </motion.div>
           </div>
+          
           <motion.div 
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.3 }}
             className="mt-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between"
           >
-            <p className="text-lg font-medium text-gray-900">{workoutPlan.overview.goal}</p>
-            <p className="text-sm text-gray-600">{workoutPlan.overview.repsAndSets}</p>
+            <p className="text-lg font-medium text-cyan-400">{workoutPlan.overview.goal}</p>
+            <p className="text-sm text-gray-100">{workoutPlan.overview.repsAndSets}</p>
           </motion.div>
           <motion.div 
             initial={{ y: 20, opacity: 0 }}
@@ -252,7 +334,7 @@ export default function WorkoutPlanPage() {
             transition={{ duration: 0.5, delay: 0.4 }}
             className="mt-2"
           >
-            <p className="text-sm text-gray-500">{workoutPlan.overview.trainingSplit}</p>
+            <p className="text-sm text-gray-300">{workoutPlan.overview.trainingSplit}</p>
           </motion.div>
         </motion.div>
 

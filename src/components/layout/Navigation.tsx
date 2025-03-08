@@ -32,26 +32,19 @@ export default function Navigation() {
       variants={fadeInDown}
       initial="initial"
       animate="animate"
-      className="bg-gray-900 shadow-neumorph-dark"
+      className="relative z-50"
     >
       <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8" aria-label="Global">
-        <div className="flex h-16 justify-between">
+        <div className="flex h-16 items-center justify-between">
           <motion.div 
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
-            className="flex"
+            className="flex lg:flex-1"
           >
-            <Link href="/" className="flex items-center">
-              <motion.span 
-                whileHover={{ scale: 1.05 }}
-                className="text-xl font-bold bg-gradient-to-r from-cyan-400 to-blue-600 bg-clip-text text-transparent"
-              >
-                WorkoutPlan
-              </motion.span>
-            </Link>
+          
           </motion.div>
-          <div className="hidden sm:flex sm:gap-x-8 sm:items-center">
+          <div className="hidden sm:flex sm:gap-x-6 sm:items-center">
             {navigation.map((item, index) => (
               <motion.div
                 key={item.name}
@@ -61,19 +54,22 @@ export default function Navigation() {
               >
                 <Link
                   href={item.href}
-                  className={`group inline-flex items-center gap-x-2 px-4 py-2 text-sm font-semibold transition-all duration-300 rounded-xl ${
+                  className={`group inline-flex items-center gap-x-2.5 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all duration-300 ${
                     pathname === item.href
-                      ? 'bg-gray-800 text-cyan-400 shadow-neumorph-dark-sm'
-                      : 'text-gray-400 hover:text-cyan-400 hover:bg-gray-800'
+                      ? 'glass-effect text-cyan-400 shadow-neumorph-dark-sm glow'
+                      : 'text-gray-400 hover:text-cyan-400 hover:glass-effect'
                   }`}
                 >
                   <motion.div
                     whileHover={{ scale: 1.1, rotate: 5 }}
                     transition={{ duration: 0.2 }}
+                    className={pathname === item.href ? 'text-glow' : ''}
                   >
                     <item.icon className="h-5 w-5" />
                   </motion.div>
-                  <span>{item.name}</span>
+                  <span className={pathname === item.href ? 'text-glow' : ''}>
+                    {item.name}
+                  </span>
                 </Link>
               </motion.div>
             ))}
@@ -88,7 +84,7 @@ export default function Navigation() {
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
               type="button"
-              className="inline-flex items-center justify-center rounded-xl p-2.5 text-gray-400 shadow-neumorph-dark-sm hover:text-cyan-400"
+              className="glass-effect inline-flex items-center justify-center rounded-xl p-2.5 text-gray-400 shadow-neumorph-dark-sm hover:text-cyan-400"
               onClick={() => setMobileMenuOpen(true)}
             >
               <span className="sr-only">Open main menu</span>
@@ -102,18 +98,19 @@ export default function Navigation() {
         {mobileMenuOpen && (
           <Dialog
             as={motion.div}
+            static
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="sm:hidden"
+            className="relative z-50 sm:hidden"
             open={mobileMenuOpen}
             onClose={setMobileMenuOpen}
           >
             <motion.div 
               initial={{ opacity: 0 }}
-              animate={{ opacity: 0.7 }}
+              animate={{ opacity: 0.75 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 z-10 bg-black" 
+              className="fixed inset-0 bg-black/90 backdrop-blur-md" 
             />
             <Dialog.Panel
               as={motion.div}
@@ -121,13 +118,13 @@ export default function Navigation() {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-gray-900 px-6 py-6 shadow-neumorph-dark sm:max-w-sm"
+              className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto glass-effect px-6 py-6 shadow-neumorph-dark sm:max-w-sm"
             >
               <div className="flex items-center justify-between">
-                <Link href="/" className="-m-1.5 p-1.5">
+                <Link href="/" className="-m-1.5 p-1.5" onClick={() => setMobileMenuOpen(false)}>
                   <motion.span 
                     whileHover={{ scale: 1.05 }}
-                    className="text-xl font-bold bg-gradient-to-r from-cyan-400 to-blue-600 bg-clip-text text-transparent"
+                    className="text-2xl font-bold gradient-animate"
                   >
                     WorkoutPlan
                   </motion.span>
@@ -136,16 +133,16 @@ export default function Navigation() {
                   whileHover={{ scale: 1.1, rotate: 90 }}
                   whileTap={{ scale: 0.95 }}
                   type="button"
-                  className="rounded-xl p-2.5 text-gray-400 shadow-neumorph-dark-sm hover:text-cyan-400"
+                  className="glass-effect rounded-xl p-2.5 text-gray-400 shadow-neumorph-dark-sm hover:text-cyan-400"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   <span className="sr-only">Close menu</span>
                   <XMarkIcon className="h-6 w-6" aria-hidden="true" />
                 </motion.button>
               </div>
-              <div className="mt-6 flow-root">
-                <div className="-my-6 divide-y divide-gray-800">
-                  <div className="space-y-2 py-6">
+              <div className="mt-8 flow-root">
+                <div className="-my-6 divide-y divide-gray-800/20">
+                  <div className="space-y-3 py-6">
                     {navigation.map((item, index) => (
                       <motion.div
                         key={item.name}
@@ -155,20 +152,23 @@ export default function Navigation() {
                       >
                         <Link
                           href={item.href}
-                          className={`-mx-3 flex items-center gap-x-2 rounded-xl px-4 py-2 text-base font-semibold transition-all duration-300 ${
+                          className={`-mx-3 flex items-center gap-x-3 rounded-xl px-4 py-3 text-base font-semibold transition-all duration-300 ${
                             pathname === item.href
-                              ? 'bg-gray-800 text-cyan-400 shadow-neumorph-dark-sm'
-                              : 'text-gray-400 hover:text-cyan-400 hover:bg-gray-800'
+                              ? 'glass-effect text-cyan-400 shadow-neumorph-dark-sm glow'
+                              : 'text-gray-400 hover:text-cyan-400 hover:glass-effect'
                           }`}
                           onClick={() => setMobileMenuOpen(false)}
                         >
                           <motion.div
                             whileHover={{ scale: 1.1, rotate: 5 }}
                             transition={{ duration: 0.2 }}
+                            className={pathname === item.href ? 'text-glow' : ''}
                           >
                             <item.icon className="h-6 w-6" />
                           </motion.div>
-                          {item.name}
+                          <span className={pathname === item.href ? 'text-glow' : ''}>
+                            {item.name}
+                          </span>
                         </Link>
                       </motion.div>
                     ))}

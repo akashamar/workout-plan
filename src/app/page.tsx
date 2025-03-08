@@ -1,5 +1,6 @@
 'use client';
 
+import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { ChartBarIcon, ClipboardDocumentListIcon } from '@heroicons/react/24/outline';
 
@@ -9,52 +10,110 @@ const features = [
     description: 'Follow a comprehensive 2-week Push-Pull-Legs workout routine designed for muscle gain and strength.',
     icon: ClipboardDocumentListIcon,
     href: '/workout-plan',
+    gradient: 'from-cyan-400 to-blue-500',
   },
   {
     name: 'Muscle Groups',
     description: 'Explore detailed information about different muscle groups and their exercises.',
     icon: ChartBarIcon,
     href: '/muscle-groups',
+    gradient: 'from-blue-500 to-indigo-600',
   },
 ];
 
+const fadeInUp = {
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.5 }
+};
+
+const stagger = {
+  animate: {
+    transition: {
+      staggerChildren: 0.1
+    }
+  }
+};
+
 export default function Home() {
   return (
-    <div className="relative isolate overflow-hidden">
-      <div className="mx-auto max-w-7xl pb-24 pt-10 sm:pb-32">
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          <div className="mx-auto max-w-2xl text-center">
-            <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
-              Your Personal Workout Journey
-            </h1>
-            <p className="mt-6 text-lg leading-8 text-gray-600">
-              Track your workouts, understand muscle groups, and achieve your fitness goals with our comprehensive workout plan.
-            </p>
-          </div>
+    <div className="relative min-h-screen overflow-hidden">
+      {/* Hero Section */}
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.8 }}
+        className="relative pt-16 pb-32 flex flex-col items-center justify-center min-h-screen text-center px-6"
+      >
+        <motion.h1 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="text-4xl sm:text-6xl font-bold tracking-tight"
+        >
+          <span className="gradient-animate">Your Personal Workout</span>
+          <br />
+          <span className="gradient-animate">Journey</span>
+        </motion.h1>
 
-          <div className="mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-none">
-            <dl className="grid max-w-xl grid-cols-1 gap-x-8 gap-y-16 lg:max-w-none lg:grid-cols-2">
-              {features.map((feature) => (
-                <Link key={feature.name} href={feature.href} className="group">
-                  <div className="flex flex-col gap-6 rounded-lg p-6 transition-all duration-200 hover:bg-gray-100">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-indigo-600 group-hover:bg-indigo-700">
-                      <feature.icon className="h-6 w-6 text-white" aria-hidden="true" />
-                    </div>
-                    <div>
-                      <dt className="text-lg font-semibold leading-7 text-gray-900">
-                        {feature.name}
-                      </dt>
-                      <dd className="mt-2 text-base leading-7 text-gray-600">
-                        {feature.description}
-                      </dd>
-                    </div>
+        <motion.p 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+          className="mt-6 text-lg sm:text-xl leading-8 text-gray-300 max-w-2xl text-balance"
+        >
+          Track your workouts, understand muscle groups, and achieve your fitness goals with our comprehensive workout plan.
+        </motion.p>
+
+        <motion.div 
+          variants={stagger}
+          initial="initial"
+          animate="animate"
+          className="mt-16 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:gap-16 max-w-5xl"
+        >
+          {features.map((feature) => (
+            <motion.div
+              key={feature.name}
+              variants={fadeInUp}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="relative"
+            >
+              <Link
+                href={feature.href}
+                className="block group"
+              >
+                <div className="glass-effect rounded-2xl px-6 pb-8 pt-10 shadow-neumorph-dark transition-all duration-300 hover:shadow-neumorph-dark-sm group-hover:glow h-full">
+                  <div className={`absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 inline-flex h-16 w-16 items-center justify-center rounded-xl bg-gradient-to-r ${feature.gradient} shadow-neumorph-dark-sm text-white`}>
+                    <feature.icon className="h-8 w-8" aria-hidden="true" />
                   </div>
-                </Link>
-              ))}
-            </dl>
-          </div>
+                  <h3 className="mt-4 text-xl font-semibold leading-7 tracking-tight text-cyan-400 text-glow">
+                    {feature.name}
+                  </h3>
+                  <p className="mt-2 text-base leading-7 text-gray-300">
+                    {feature.description}
+                  </p>
+                </div>
+              </Link>
+            </motion.div>
+          ))}
+        </motion.div>
+
+        {/* Decorative elements */}
+        <div className="absolute inset-0 -z-10 overflow-hidden">
+          {/* Grid pattern */}
+          <div className="absolute inset-0" style={{ 
+            background: `linear-gradient(to right, rgba(30, 36, 51, 0.6) 1px, transparent 1px),
+                        linear-gradient(to bottom, rgba(30, 36, 51, 0.6) 1px, transparent 1px)`,
+            backgroundSize: '40px 40px'
+          }} />
+          
+          {/* Glowing orbs */}
+          <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-cyan-500/10 rounded-full blur-3xl" />
+          <div className="absolute bottom-1/4 right-1/4 w-72 h-72 bg-blue-500/10 rounded-full blur-3xl" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl" />
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 } 

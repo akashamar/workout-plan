@@ -29,31 +29,43 @@ interface MuscleGroupItemProps {
 const MuscleGroupItem = ({ name, muscles, subgroups, depth = 0 }: MuscleGroupItemProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const hasChildren = (muscles && muscles.length > 0) || (subgroups && subgroups.length > 0);
-  const colors = ['cyan', 'blue', 'indigo', 'violet', 'purple', 'fuchsia'];
-  const color = colors[depth % colors.length];
+
+  // Define gradient colors for each depth level
+  const gradients = [
+    'from-cyan-400 to-blue-500',
+    'from-blue-400 to-indigo-500',
+    'from-indigo-400 to-violet-500',
+    'from-violet-400 to-purple-500',
+    'from-purple-400 to-fuchsia-500'
+  ];
+  const gradient = gradients[depth % gradients.length];
+  const textColor = `text-${gradient.split('-')[1]}-400`;
 
   return (
     <motion.div 
       variants={fadeInUp}
-      className={depth > 0 ? ['mb-3', `ml-${depth * 4}`].join(' ') : 'mb-3'}
+      className="mb-3"
     >
       <motion.div 
         whileHover={{ scale: 1.02 }}
-        className={`overflow-hidden rounded-2xl bg-gray-900 shadow-neumorph-dark transition-all duration-300`}
+        className="relative overflow-hidden rounded-xl bg-gray-800/50 shadow-neumorph-dark transition-all duration-300"
       >
+        {/* Gradient border effect */}
+        <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 to-blue-500/10" />
+        
         <motion.button
           type="button"
           onClick={() => setIsOpen(!isOpen)}
-          whileHover={{ backgroundColor: 'rgba(255, 255, 255, 0.03)' }}
-          whileTap={{ backgroundColor: 'rgba(255, 255, 255, 0.05)' }}
-          className="flex w-full items-center justify-between p-5 text-left"
+          whileHover={{ backgroundColor: 'rgba(255, 255, 255, 0.05)' }}
+          whileTap={{ backgroundColor: 'rgba(255, 255, 255, 0.08)' }}
+          className="relative flex w-full items-center justify-between p-5 text-left"
         >
-          <div className="flex items-center space-x-3">
-            <span className={`${depth === 0 ? 'text-xl' : 'text-lg'} font-semibold bg-gradient-to-r from-${color}-400 to-${color}-600 bg-clip-text text-transparent`}>
+          <div className="flex flex-col space-y-2">
+            <span className={`text-xl font-bold bg-gradient-to-r ${gradient} bg-clip-text text-transparent`}>
               {name}
             </span>
             {muscles && (
-              <span className="text-sm font-normal text-gray-400">
+              <span className="text-sm font-medium text-gray-100">
                 ({muscles.length} {muscles.length === 1 ? 'muscle' : 'muscles'})
               </span>
             )}
@@ -62,8 +74,9 @@ const MuscleGroupItem = ({ name, muscles, subgroups, depth = 0 }: MuscleGroupIte
             <motion.div
               animate={{ rotate: isOpen ? 180 : 0 }}
               transition={{ duration: 0.3 }}
+              className="flex items-center"
             >
-              <ChevronDownIcon className={`h-5 w-5 ${isOpen ? `text-${color}-400` : 'text-gray-500'}`} />
+              <ChevronDownIcon className={`h-6 w-6 ${isOpen ? textColor : 'text-gray-100'}`} />
             </motion.div>
           )}
         </motion.button>
@@ -87,18 +100,21 @@ const MuscleGroupItem = ({ name, muscles, subgroups, depth = 0 }: MuscleGroupIte
                 <motion.div
                   variants={fadeInUp}
                   key={`${name}-muscle-${muscle}`}
-                  whileHover={{ scale: 1.02, backgroundColor: 'rgba(255, 255, 255, 0.03)' }}
-                  className={`rounded-xl bg-gray-800 p-4 text-sm text-gray-300 shadow-neumorph-dark-sm transition-all duration-300`}
+                  whileHover={{ scale: 1.02, backgroundColor: 'rgba(255, 255, 255, 0.05)' }}
+                  className="relative overflow-hidden rounded-lg bg-gray-800/50 p-4 text-gray-100 shadow-neumorph-dark-sm transition-all duration-300"
                 >
-                  {muscle}
+                  {/* Subtle gradient background */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/5 to-blue-500/5" />
+                  <span className="relative">{muscle}</span>
                 </motion.div>
               ))}
               {subgroups?.map((subgroup) => (
-                <MuscleGroupItem
-                  key={`${name}-subgroup-${subgroup.name}`}
-                  {...subgroup}
-                  depth={depth + 1}
-                />
+                <div className="pl-6" key={`${name}-subgroup-${subgroup.name}`}>
+                  <MuscleGroupItem
+                    {...subgroup}
+                    depth={depth + 1}
+                  />
+                </div>
               ))}
             </motion.div>
           </motion.div>
@@ -114,7 +130,7 @@ export default function MuscleGroupsPage() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="min-h-screen bg-gray-900 py-8 px-4 sm:px-6 lg:px-8"
+      className="min-h-screen py-8 px-4 sm:px-6 lg:px-8"
     >
       <div className="mx-auto max-w-4xl">
         <motion.div 
@@ -127,7 +143,7 @@ export default function MuscleGroupsPage() {
             initial={{ scale: 0.95, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="text-4xl font-bold tracking-tight bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent sm:text-5xl"
+            className="text-4xl font-bold tracking-tight sm:text-5xl bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-500 bg-clip-text text-transparent"
           >
             Muscle Groups
           </motion.h1>
@@ -135,7 +151,7 @@ export default function MuscleGroupsPage() {
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.3 }}
-            className="mt-4 text-lg text-gray-400"
+            className="mt-4 text-lg text-gray-100"
           >
             Explore different muscle groups and their anatomical details
           </motion.p>
@@ -147,7 +163,7 @@ export default function MuscleGroupsPage() {
           animate="animate"
           className="space-y-6"
         >
-          {muscleGroups.map((group, index) => (
+          {muscleGroups.map((group) => (
             <MuscleGroupItem
               key={`group-${group.name}`}
               {...group}

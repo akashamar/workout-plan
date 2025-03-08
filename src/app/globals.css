@@ -2,16 +2,32 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-}
+@layer base {
+  :root {
+    --background: 228 23% 13%;
+    --foreground: 210 40% 98%;
+  }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: rgb(var(--background-end-rgb));
-  min-height: 100vh;
+  body {
+    @apply bg-gray-900 text-gray-100;
+    background: radial-gradient(circle at center, #1e2433, #141821);
+    min-height: 100vh;
+    position: relative;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+      linear-gradient(to right, rgba(30, 36, 51, 0.6) 1px, transparent 1px) 0 0 / 40px 100%,
+      linear-gradient(to bottom, rgba(30, 36, 51, 0.6) 1px, transparent 1px) 0 0 / 100% 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
 }
 
 @layer utilities {
@@ -19,16 +35,35 @@ body {
   .ml-8 { margin-left: 2rem; }
   .ml-12 { margin-left: 3rem; }
   .ml-16 { margin-left: 4rem; }
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .glass-effect {
+    @apply bg-gray-900/70 backdrop-blur-lg;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .glow {
+    box-shadow: 0 0 20px rgba(56, 189, 248, 0.1);
+  }
+
+  .glow:hover {
+    box-shadow: 0 0 30px rgba(56, 189, 248, 0.2);
+  }
+
+  .text-glow {
+    text-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
+  }
 }
 
 @layer components {
   .card {
-    @apply overflow-hidden shadow-sm transition-shadow duration-200;
-    border-radius: 0.5rem;
+    @apply glass-effect rounded-xl shadow-neumorph-dark transition-all duration-300;
   }
 
   .card:hover {
-    @apply shadow-md;
+    @apply glow transform scale-[1.02];
   }
 
   .card-header {
@@ -40,20 +75,25 @@ body {
   }
 
   .button {
-    @apply rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600;
+    @apply glass-effect rounded-xl px-4 py-2.5 text-sm font-semibold text-cyan-400 
+           shadow-neumorph-dark-sm transition-all duration-300 hover:text-cyan-300 
+           hover:shadow-neumorph-dark hover:scale-105 active:scale-95;
   }
 
   .button-secondary {
-    @apply rounded-md bg-white px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50;
+    @apply glass-effect rounded-xl px-4 py-2.5 text-sm font-semibold text-gray-300 
+           shadow-neumorph-dark-sm transition-all duration-300 hover:text-gray-200 
+           hover:shadow-neumorph-dark hover:scale-105 active:scale-95;
   }
 }
 
 /* Video player container */
 .aspect-video {
   position: relative;
-  padding-bottom: 56.25%; /* 16:9 */
+  padding-bottom: 56.25%;
   height: 0;
   overflow: hidden;
+  @apply rounded-xl shadow-neumorph-dark;
 }
 
 .aspect-video iframe,
@@ -63,5 +103,59 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  border-radius: 0.5rem;
+  @apply rounded-xl;
+}
+
+/* Animated gradient background */
+@keyframes gradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.gradient-animate {
+  background: linear-gradient(-45deg, #22d3ee, #0ea5e9, #3b82f6, #6366f1);
+  background-size: 400% 400%;
+  animation: gradient 15s ease infinite;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Custom scrollbar for dark theme */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1a1f2b;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2d3748;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #4a5568;
+}
+
+/* For Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #2d3748 #1a1f2b;
+}
+
+/* Remove white background from autofill */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px #1a1f2b inset !important;
+  -webkit-text-fill-color: #e2e8f0 !important;
+}
+
+/* Smooth transitions */
+* {
+  @apply transition-colors duration-200;
 } 

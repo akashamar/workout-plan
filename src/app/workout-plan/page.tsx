@@ -246,7 +246,7 @@ export default function WorkoutPlanPage() {
               initial={{ x: 20, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="relative"
+              className="relative inline-block"
             >
               <motion.button
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
@@ -280,7 +280,8 @@ export default function WorkoutPlanPage() {
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -10 }}
                       transition={{ duration: 0.2 }}
-                      className="absolute right-0 z-40 mt-2 w-48 origin-top-right"
+                      className="absolute right-0 top-full z-40 mt-2 min-w-[114px] transform"
+                      style={{ maxHeight: 'calc(100vh - 100px)' }}
                     >
                       <div className="relative overflow-hidden rounded-xl bg-gray-800/95 shadow-neumorph-dark backdrop-blur-sm">
                         <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 to-blue-500/10" />

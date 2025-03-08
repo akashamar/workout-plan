@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { ChartBarIcon, ClipboardDocumentListIcon } from '@heroicons/react/24/outline';
+import DownloadButton from '@/components/ui/DownloadButton';
 
 const features = [
   {
@@ -113,6 +114,21 @@ export default function Home() {
           <div className="absolute bottom-1/4 right-1/4 w-72 h-72 bg-blue-500/10 rounded-full blur-3xl" />
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl" />
         </div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.6 }}
+          className="mt-10 flex items-center justify-center gap-6"
+        >
+          <Link
+            href="/workout-plan"
+            className="rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 px-4 py-2.5 text-base font-medium text-white shadow-neumorph-dark transition-all duration-300 hover:from-cyan-400 hover:to-blue-400"
+          >
+            Get Started
+          </Link>
+          <DownloadButton />
+        </motion.div>
       </motion.div>
     </div>
   );
